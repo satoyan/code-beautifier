@@ -10,14 +10,14 @@ pub struct CmdOptions {
 pub fn generate_html_from_source(source: &str, language: &str) -> String {
     let ps = syntect::parsing::SyntaxSet::load_defaults_newlines();
     let ts = syntect::highlighting::ThemeSet::load_defaults();
-    // Try to find the syntax by name or extension
+    // Use a more vibrant and readable dark theme
+    let theme = ts.themes.get("base16-ocean.dark").unwrap_or(&ts.themes["InspiredGitHub"]);
     let syntax = ps.find_syntax_by_token(language)
         .or_else(|| ps.find_syntax_by_name(language))
         .unwrap_or_else(|| ps.find_syntax_plain_text());
-    let theme = &ts.themes["InspiredGitHub"];
     let highlighted = syntect::html::highlighted_html_for_string(source, &ps, syntax, theme)
         .expect("Failed to generate HTML from source code");
-    // Wrap in a beautiful HTML template
+    // Wrap in a beautiful HTML template with a lighter code background for contrast
     format!(r#"<!DOCTYPE html>
 <html lang=\"en\">
 <head>
@@ -59,9 +59,11 @@ pre {{
   font-family: 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
   font-size: 1.15rem;
   line-height: 1.7;
-  background: none !important;
+  background: #2b303b !important; /* lighter for contrast */
   color: #eaeaea;
   overflow-x: auto;
+  border-radius: 12px;
+  padding: 1.2em 1em;
 }}
 </style>
 </head>
