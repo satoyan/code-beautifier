@@ -19,6 +19,12 @@ pub fn generate_html_from_source(source: &str, language: &str) -> String {
         .expect("Failed to generate HTML from source code")
 }
 
+/// Prints the help message and exits the program.
+pub fn print_help_and_exit() -> ! {
+    eprintln!("Usage: code-beautifier [--language <LANG>] [--output <FILE>]\n\nOptions:\n  --language <LANG>   Set the language for syntax highlighting (default: Rust)\n  --output <FILE>     Write output HTML to <FILE> instead of stdout\n  -h, --help          Show this help message and exit");
+    std::process::exit(1);
+}
+
 /// Parses command line arguments and returns CmdOptions
 pub fn parse_args(args: &[String]) -> CmdOptions {
     let mut output_to_file = false;
@@ -26,13 +32,31 @@ pub fn parse_args(args: &[String]) -> CmdOptions {
     let mut language = String::from("Rust");
     let mut i = 1;
     while i < args.len() {
-        if args[i] == "--output" && i + 1 < args.len() {
-            output_to_file = true;
-            output_filename = args[i + 1].clone();
-            i += 1;
-        } else if args[i] == "--language" && i + 1 < args.len() {
-            language = args[i + 1].clone();
-            i += 1;
+        match args[i].as_str() {
+            "-h" | "--help" => print_help_and_exit(),
+            "--output" => {
+                if i + 1 < args.len() {
+                    output_to_file = true;
+                    output_filename = args[i + 1].clone();
+                    i += 1;
+                } else {
+                    eprintln!("Error: --output requires a filename argument.\n");
+                    print_help_and_exit();
+                }
+            },
+            "--language" => {
+                if i + 1 < args.len() {
+                    language = args[i + 1].clone();
+                    i += 1;
+                } else {
+                    eprintln!("Error: --language requires a language name argument.\n");
+                    print_help_and_exit();
+                }
+            },
+            _ => {
+                eprintln!("Error: Unrecognized option '{}'.\n", args[i]);
+                print_help_and_exit();
+            }
         }
         i += 1;
     }
