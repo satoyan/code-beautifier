@@ -8,7 +8,6 @@ pub struct CmdOptions {
 /// `language` should be a string like "C", "C++", "Java", "C#", "JavaScript", "TypeScript", "Dart", etc.
 /// Returns a String containing the HTML code.
 pub fn generate_html_from_source(source: &str, language: &str) -> String {
-    use std::fs;
     let ps = syntect::parsing::SyntaxSet::load_defaults_newlines();
     let ts = syntect::highlighting::ThemeSet::load_defaults();
     let theme = ts.themes.get("base16-ocean.dark").unwrap_or(&ts.themes["InspiredGitHub"]);
@@ -17,7 +16,8 @@ pub fn generate_html_from_source(source: &str, language: &str) -> String {
         .unwrap_or_else(|| ps.find_syntax_plain_text());
     let highlighted = syntect::html::highlighted_html_for_string(source, &ps, syntax, theme)
         .expect("Failed to generate HTML from source code");
-    let template = fs::read_to_string("src/template.html").expect("Failed to read HTML template file");
+    // Embed the template at compile time
+    let template = include_str!("./template.html");
     template.replace("{{highlighted}}", &highlighted)
 }
 
