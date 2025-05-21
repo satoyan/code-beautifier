@@ -15,8 +15,63 @@ pub fn generate_html_from_source(source: &str, language: &str) -> String {
         .or_else(|| ps.find_syntax_by_name(language))
         .unwrap_or_else(|| ps.find_syntax_plain_text());
     let theme = &ts.themes["InspiredGitHub"];
-    syntect::html::highlighted_html_for_string(source, &ps, syntax, theme)
-        .expect("Failed to generate HTML from source code")
+    let highlighted = syntect::html::highlighted_html_for_string(source, &ps, syntax, theme)
+        .expect("Failed to generate HTML from source code");
+    // Wrap in a beautiful HTML template
+    format!(r#"<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+<meta charset=\"UTF-8\">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+<title>Code Beautifier</title>
+<style>
+body {{
+  min-height: 100vh;
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}}
+.code-window {{
+  background: #23272f;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  padding: 2.5rem 2rem 2rem 2rem;
+  max-width: 800px;
+  min-width: 320px;
+  width: 90vw;
+  position: relative;
+}}
+.window-bar {{
+  height: 18px;
+  background: linear-gradient(90deg, #ff5f56, #ffbd2e, #27c93f);
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 1.2rem;
+  width: 80px;
+  position: absolute;
+  left: 24px;
+  top: 12px;
+  opacity: 0.7;
+}}
+pre {{
+  margin: 0;
+  font-family: 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  background: none !important;
+  color: #eaeaea;
+  overflow-x: auto;
+}}
+</style>
+</head>
+<body>
+  <div class=\"code-window\">
+    <div class=\"window-bar\"></div>
+    {highlighted}
+  </div>
+</body>
+</html>"#)
 }
 
 /// Prints the help message and exits the program.
