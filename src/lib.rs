@@ -10,38 +10,42 @@ pub struct CmdOptions {
 pub fn generate_html_from_source(source: &str, language: &str) -> String {
     let ps = syntect::parsing::SyntaxSet::load_defaults_newlines();
     let ts = syntect::highlighting::ThemeSet::load_defaults();
-    // Use a more vibrant and readable dark theme
     let theme = ts.themes.get("base16-ocean.dark").unwrap_or(&ts.themes["InspiredGitHub"]);
     let syntax = ps.find_syntax_by_token(language)
         .or_else(|| ps.find_syntax_by_name(language))
         .unwrap_or_else(|| ps.find_syntax_plain_text());
     let highlighted = syntect::html::highlighted_html_for_string(source, &ps, syntax, theme)
         .expect("Failed to generate HTML from source code");
-    // Wrap in a beautiful HTML template with a lighter code background for contrast
+    // Ray.so-inspired HTML template
     format!(r#"<!DOCTYPE html>
-<html lang=\"en\">
+<html lang=\"en\" class=\"dark\" style=\"color-scheme:dark\">
 <head>
-<meta charset=\"UTF-8\">
-<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+<meta charset=\"utf-8\"/>
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>
+<meta name=\"theme-color\" content=\"#181818\"/>
 <title>Code Beautifier</title>
+<meta name=\"description\" content=\"Turn your code into beautiful images. Choose from a range of syntax colors, hide or show the background, and toggle between a dark and light window.\"/>
+<meta name=\"keywords\" content=\"generate, create, convert, source, code, snippet, image, picture, share, export\"/>
 <style>
 body {{
   min-height: 100vh;
-  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  background: linear-gradient(135deg, #18181b 0%, #232526 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
+  font-family: 'Geist Mono', 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
 }}
 .code-window {{
-  background: #23272f;
+  background: rgba(24,24,27,0.95);
   border-radius: 18px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   padding: 2.5rem 2rem 2rem 2rem;
-  max-width: 800px;
+  max-width: 900px;
   min-width: 320px;
   width: 90vw;
   position: relative;
+  border: 1.5px solid #232526;
 }}
 .window-bar {{
   height: 18px;
@@ -56,18 +60,19 @@ body {{
 }}
 pre {{
   margin: 0;
-  font-family: 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-family: inherit;
   font-size: 1.15rem;
   line-height: 1.7;
-  background: #2b303b !important; /* lighter for contrast */
+  background: none !important;
   color: #eaeaea;
   overflow-x: auto;
   border-radius: 12px;
   padding: 1.2em 1em;
+  box-shadow: none;
 }}
 </style>
 </head>
-<body>
+<body class=\"isolate\">
   <div class=\"code-window\">
     <div class=\"window-bar\"></div>
     {highlighted}
