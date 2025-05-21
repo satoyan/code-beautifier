@@ -48,7 +48,7 @@ npm install puppeteer clipboardy
    ```
 
 ## Keyboard Shortcut (in browser)
-If you open the generated HTML in a browser, press **Ctrl+Shift+C** (or **Cmd+Shift+C** on Mac) to copy the code window as a PNG image to your clipboard.
+If you open the generated HTML in a browser, press **Ctrl+C** (or **Cmd+C** on Mac) to copy the code window as a PNG image to your clipboard.
 
 ## Notes
 - The HTML template is embedded in the binary at build time.
