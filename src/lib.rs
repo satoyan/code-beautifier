@@ -18,14 +18,14 @@ pub fn generate_html_from_source(source: &str, language: &str) -> String {
         .expect("Failed to generate HTML from source code");
     // Ray.so-inspired HTML template
     format!(r#"<!DOCTYPE html>
-<html lang=\"en\" class=\"dark\" style=\"color-scheme:dark\">
+<html lang="en" class="dark" style="color-scheme:dark">
 <head>
-<meta charset=\"utf-8\"/>
-<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>
-<meta name=\"theme-color\" content=\"#181818\"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#181818"/>
 <title>Code Beautifier</title>
-<meta name=\"description\" content=\"Turn your code into beautiful images. Choose from a range of syntax colors, hide or show the background, and toggle between a dark and light window.\"/>
-<meta name=\"keywords\" content=\"generate, create, convert, source, code, snippet, image, picture, share, export\"/>
+<meta name="description" content="Turn your code into beautiful images. Choose from a range of syntax colors, hide or show the background, and toggle between a dark and light window."/>
+<meta name="keywords" content="generate, create, convert, source, code, snippet, image, picture, share, export"/>
 <style>
 body {{
   min-height: 100vh;
@@ -72,9 +72,9 @@ pre {{
 }}
 </style>
 </head>
-<body class=\"isolate\">
-  <div class=\"code-window\">
-    <div class=\"window-bar\"></div>
+<body class="isolate">
+  <div class="code-window">
+    <div class="window-bar"></div>
     {highlighted}
   </div>
 </body>
