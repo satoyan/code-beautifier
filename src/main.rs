@@ -13,6 +13,8 @@ fn main() {
     } else {
         code = r#"fn main() { println!(\"Hello, world!\"); }"#.to_string();
     }
+    // Parse --copy-to-clipboard option
+    let copy_to_clipboard = args.iter().any(|arg| arg == "--copy-to-clipboard");
     let opts = parse_args(&args);
     let html = generate_html_from_source(&code, &opts.language);
 
@@ -23,22 +25,28 @@ fn main() {
             .expect("Failed to write HTML to file");
         opts.output_filename.clone()
     } else {
-        // Write to a temp file if not outputting to a user-specified file
-        let tmpfile = "output.html";
+        // Write to a temp file in /tmp and open with default browser
+        let tmpfile = "/tmp/code-beautifier-output.html";
         let mut file = File::create(tmpfile).expect("Failed to create temp output file");
         file.write_all(html.as_bytes()).expect("Failed to write HTML to temp file");
+        // Open with default browser
+        if let Err(e) = Command::new("xdg-open").arg(tmpfile).status() {
+            eprintln!("[WARN] Could not open browser: {}", e);
+        }
         tmpfile.to_string()
     };
 
-    // Call the Node.js script to copy the image to clipboard
-    if let Ok(status) = Command::new("node")
-        .arg("html2clip.js")
-        .arg(&output_file)
-        .status() {
-        if !status.success() {
-            eprintln!("[WARN] Could not copy image to clipboard (node/html2clip.js failed)");
+    // Only run html2clip.js if --copy-to-clipboard is specified
+    if copy_to_clipboard {
+        if let Ok(status) = Command::new("node")
+            .arg("html2clip.js")
+            .arg(&output_file)
+            .status() {
+            if !status.success() {
+                eprintln!('[WARN] Could not copy image to clipboard (node/html2clip.js failed)');
+            }
+        } else {
+            eprintln!('[WARN] Could not run node/html2clip.js. Is Node.js installed?');
         }
-    } else {
-        eprintln!("[WARN] Could not run node/html2clip.js. Is Node.js installed?");
     }
 }
