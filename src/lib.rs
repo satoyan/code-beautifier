@@ -2,6 +2,7 @@ pub struct CmdOptions {
     pub output_to_file: bool,
     pub output_filename: String,
     pub language: String,
+    pub copy_to_clipboard: bool,
 }
 
 /// Generates HTML with syntax highlighting for the given source code and language.
@@ -23,7 +24,7 @@ pub fn generate_html_from_source(source: &str, language: &str) -> String {
 
 /// Prints the help message and exits the program.
 pub fn print_help_and_exit() -> ! {
-    eprintln!("Usage: code-beautifier [--language <LANG>] [--output <FILE>]\n\nOptions:\n  --language <LANG>   Set the language for syntax highlighting (default: Rust)\n  --output <FILE>     Write output HTML to <FILE> instead of stdout\n  -h, --help          Show this help message and exit");
+    eprintln!("Usage: code-beautifier [--language <LANG>] [--output <FILE>] [--copy-to-clipboard]\n\nOptions:\n  --language <LANG>         Set the language for syntax highlighting (default: Rust)\n  --output <FILE>           Write output HTML to <FILE> instead of /tmp/code-beautifier-output.html\n  --copy-to-clipboard       Copy the code image as PNG to clipboard (requires Node.js & html2clip.js)\n  -h, --help                Show this help message and exit\n\nIf --output is not specified, the HTML will be written to /tmp/code-beautifier-output.html and opened in your default browser.\n");
     std::process::exit(1);
 }
 
@@ -32,6 +33,7 @@ pub fn parse_args(args: &[String]) -> CmdOptions {
     let mut output_to_file = false;
     let mut output_filename = String::new();
     let mut language = String::from("Rust");
+    let mut copy_to_clipboard = false;
     let mut i = 1;
     while i < args.len() {
         match args[i].as_str() {
@@ -55,6 +57,9 @@ pub fn parse_args(args: &[String]) -> CmdOptions {
                     print_help_and_exit();
                 }
             },
+            "--copy-to-clipboard" => {
+                copy_to_clipboard = true;
+            },
             _ => {
                 eprintln!("Error: Unrecognized option '{}'.\n", args[i]);
                 print_help_and_exit();
@@ -62,5 +67,5 @@ pub fn parse_args(args: &[String]) -> CmdOptions {
         }
         i += 1;
     }
-    CmdOptions { output_to_file, output_filename, language }
+    CmdOptions { output_to_file, output_filename, language, copy_to_clipboard }
 }

@@ -25,8 +25,6 @@ fn main() {
     } else {
         code = r#"fn main() { println!(\"Hello, world!\"); }"#.to_string();
     }
-    // Parse --copy-to-clipboard option
-    let copy_to_clipboard = args.iter().any(|arg| arg == "--copy-to-clipboard");
     let opts = parse_args(&args);
     let html = generate_html_from_source(&code, &opts.language);
 
@@ -45,7 +43,7 @@ fn main() {
     };
 
     // Only run html2clip.js if --copy-to-clipboard is specified
-    if copy_to_clipboard {
+    if opts.copy_to_clipboard {
         if let Ok(status) = Command::new("node")
             .arg("html2clip.js")
             .arg(&output_file)
