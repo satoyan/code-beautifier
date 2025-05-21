@@ -11,8 +11,12 @@ pub struct CmdOptions {
 pub fn generate_html_from_source(source: &str, language: &str) -> String {
     let ps = syntect::parsing::SyntaxSet::load_defaults_newlines();
     let ts = syntect::highlighting::ThemeSet::load_defaults();
-    let theme = ts.themes.get("base16-ocean.dark").unwrap_or(&ts.themes["InspiredGitHub"]);
-    let syntax = ps.find_syntax_by_token(language)
+    let theme = ts
+        .themes
+        .get("base16-ocean.dark")
+        .unwrap_or(&ts.themes["InspiredGitHub"]);
+    let syntax = ps
+        .find_syntax_by_token(language)
         .or_else(|| ps.find_syntax_by_name(language))
         .unwrap_or_else(|| ps.find_syntax_plain_text());
     let highlighted = syntect::html::highlighted_html_for_string(source, &ps, syntax, theme)
@@ -47,7 +51,7 @@ pub fn parse_args(args: &[String]) -> CmdOptions {
                     eprintln!("Error: --output requires a filename argument.\n");
                     print_help_and_exit();
                 }
-            },
+            }
             "--language" => {
                 if i + 1 < args.len() {
                     language = args[i + 1].clone();
@@ -56,10 +60,10 @@ pub fn parse_args(args: &[String]) -> CmdOptions {
                     eprintln!("Error: --language requires a language name argument.\n");
                     print_help_and_exit();
                 }
-            },
+            }
             "--copy-to-clipboard" => {
                 copy_to_clipboard = true;
-            },
+            }
             _ => {
                 eprintln!("Error: Unrecognized option '{}'.\n", args[i]);
                 print_help_and_exit();
@@ -67,5 +71,10 @@ pub fn parse_args(args: &[String]) -> CmdOptions {
         }
         i += 1;
     }
-    CmdOptions { output_to_file, output_filename, language, copy_to_clipboard }
+    CmdOptions {
+        output_to_file,
+        output_filename,
+        language,
+        copy_to_clipboard,
+    }
 }

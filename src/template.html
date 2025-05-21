@@ -1,127 +1,155 @@
 <!DOCTYPE html>
 <html lang="en" class="dark" style="color-scheme:dark">
+
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta name="theme-color" content="#181818"/>
-<title>Code Beautifier</title>
-<meta name="description" content="Turn your code into beautiful images. Choose from a range of syntax colors, hide or show the background, and toggle between a dark and light window."/>
-<meta name="keywords" content="generate, create, convert, source, code, snippet, image, picture, share, export"/>
-<style>
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  min-height: 100vh;
-  background: radial-gradient(ellipse at 50% 40%, #232526 0%, #18181b 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Geist Mono', 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
-  color: #eaeaea;
-  letter-spacing: 0.01em;
-}
-.code-window {
-  background: #23272f;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37), 0 1.5px 8px 0 #0008;
-  padding: 2.5rem 2rem 2rem 2rem;
-  max-width: 900px;
-  min-width: 320px;
-  width: 90vw;
-  position: relative;
-  border: 1.5px solid #232526;
-  overflow: hidden;
-}
-.window-bar {
-  height: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: absolute;
-  left: 24px;
-  top: 18px;
-  z-index: 2;
-}
-.window-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  display: inline-block;
-}
-.window-dot.red { background: #ff5f56; border: 1px solid #e0443e; }
-.window-dot.yellow { background: #ffbd2e; border: 1px solid #dea123; }
-.window-dot.green { background: #27c93f; border: 1px solid #13a10e; }
-pre {
-  margin: 0;
-  font-family: inherit;
-  font-size: 1.15rem;
-  line-height: 1.7;
-  background: none !important;
-  color: inherit;
-  overflow-x: auto;
-  border-radius: 12px;
-  padding: 1.2em 1em;
-  box-shadow: none;
-  z-index: 1;
-  position: relative;
-}
-pre::-webkit-scrollbar { display: none; }
-pre { scrollbar-width: none; -ms-overflow-style: none; }
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>
-// Keyboard shortcut: Ctrl+C (or Cmd+C on Mac) to copy code window as PNG
-function copyCodeWindowAsImage() {
-  const codeWindow = document.querySelector('.code-window');
-  if (!codeWindow) return;
-  html2canvas(codeWindow, {backgroundColor: null, useCORS: true}).then(canvas => {
-    canvas.toBlob(blob => {
-      if (blob) {
-        // Try to use the Clipboard API
-        if (navigator.clipboard && window.ClipboardItem) {
-          const item = new window.ClipboardItem({ 'image/png': blob });
-          navigator.clipboard.write([item]).then(() => {
-            showCopyToast('Copied image to clipboard!');
-          }, () => {
-            showCopyToast('Failed to copy image to clipboard.');
-          });
-        } else {
-          showCopyToast('Clipboard API not supported.');
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#181818" />
+  <title>Code Beautifier</title>
+  <meta name="description"
+    content="Turn your code into beautiful images. Choose from a range of syntax colors, hide or show the background, and toggle between a dark and light window." />
+  <meta name="keywords" content="generate, create, convert, source, code, snippet, image, picture, share, export" />
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 40%, #232526 0%, #18181b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Geist Mono", "Fira Mono", "JetBrains Mono", "Menlo", "Monaco", "Consolas", "monospace";
+      color: #eaeaea;
+      letter-spacing: 0.01em;
+    }
+
+    .code-window {
+      background: #23272f;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37), 0 1.5px 8px 0 #0008;
+      padding: 2.5rem 2rem 2rem 2rem;
+      max-width: 900px;
+      min-width: 320px;
+      width: 90vw;
+      position: relative;
+      border: 1.5px solid #232526;
+      overflow: hidden;
+    }
+
+    .window-bar {
+      height: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: absolute;
+      left: 24px;
+      top: 18px;
+      z-index: 2;
+    }
+
+    .window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .window-dot.red {
+      background: #ff5f56;
+      border: 1px solid #e0443e;
+    }
+
+    .window-dot.yellow {
+      background: #ffbd2e;
+      border: 1px solid #dea123;
+    }
+
+    .window-dot.green {
+      background: #27c93f;
+      border: 1px solid #13a10e;
+    }
+
+    pre {
+      margin: 0;
+      font-family: inherit;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      background: none !important;
+      color: inherit;
+      overflow-x: auto;
+      border-radius: 12px;
+      padding: 1.2em 1em;
+      box-shadow: none;
+      z-index: 1;
+      position: relative;
+    }
+
+    pre::-webkit-scrollbar {
+      display: none;
+    }
+
+    pre {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    // Keyboard shortcut: Ctrl+C (or Cmd+C on Mac) to copy code window as PNG
+    function copyCodeWindowAsImage() {
+      const codeWindow = document.querySelector('.code-window');
+      if (!codeWindow) return;
+      html2canvas(codeWindow, {backgroundColor: null, useCORS: true}).then(canvas => {
+        canvas.toBlob(blob => {
+          if (blob) {
+            // Try to use the Clipboard API
+            if (navigator.clipboard && window.ClipboardItem) {
+              const item = new window.ClipboardItem({"image/png": blob});
+              navigator.clipboard.write([item]).then(() => {
+                showCopyToast("Copied image to clipboard!");
+              }, () => {
+                showCopyToast("Failed to copy image to clipboard.");
+              });
+            } else {
+              showCopyToast("Clipboard API not supported.");
+            }
+          }
+        }, "image/png");
+      });
+    }
+    function showCopyToast(msg) {
+      let toast = document.createElement('div');
+      toast.textContent = msg;
+      toast.style.position = 'fixed';
+      toast.style.bottom = '32px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = 'rgba(30,30,30,0.95)';
+      toast.style.color = '#fff';
+      toast.style.padding = '10px 24px';
+      toast.style.borderRadius = '8px';
+      toast.style.fontSize = '1rem';
+      toast.style.zIndex = 9999;
+      toast.style.boxShadow = '0 2px 8px #0006';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 1800);
+    }
+    document.addEventListener('keydown', function (e) {
+      // Ctrl+C (or Cmd+C on Mac) to copy code window as PNG
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.code === 'KeyC') {
+        e.preventDefault();
+        copyCodeWindowAsImage();
       }
-    }, 'image/png');
-  });
-}
-function showCopyToast(msg) {
-  let toast = document.createElement('div');
-  toast.textContent = msg;
-  toast.style.position = 'fixed';
-  toast.style.bottom = '32px';
-  toast.style.left = '50%';
-  toast.style.transform = 'translateX(-50%)';
-  toast.style.background = 'rgba(30,30,30,0.95)';
-  toast.style.color = '#fff';
-  toast.style.padding = '10px 24px';
-  toast.style.borderRadius = '8px';
-  toast.style.fontSize = '1rem';
-  toast.style.zIndex = 9999;
-  toast.style.boxShadow = '0 2px 8px #0006';
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 1800);
-}
-document.addEventListener('keydown', function(e) {
-  // Ctrl+C (or Cmd+C on Mac) to copy code window as PNG
-  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.code === 'KeyC') {
-    e.preventDefault();
-    copyCodeWindowAsImage();
-  }
-});
-</script>
+    });
+  </script>
 </head>
+
 <body class="isolate">
   <div class="code-window">
     <div class="window-bar">
@@ -132,4 +160,5 @@ document.addEventListener('keydown', function(e) {
     {{highlighted}}
   </div>
 </body>
+
 </html>
