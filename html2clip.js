@@ -1,6 +1,13 @@
-const puppeteer = require('puppeteer');
-const clipboardy = require('clipboardy');
-const path = require('path');
+// html2clip.js
+// Use ESM imports for clipboardy (which is now ESM-only)
+import puppeteer from 'puppeteer';
+import clipboardy from 'clipboardy';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 (async () => {
   const htmlPath = process.argv[2];
@@ -15,7 +22,7 @@ const path = require('path');
   await page.waitForSelector('.code-window');
   const codeWindow = await page.$('.code-window');
   const imageBuffer = await codeWindow.screenshot({ type: 'png' });
-  clipboardy.writeSync(imageBuffer);
+  await clipboardy.write(imageBuffer);
   await browser.close();
   console.log('Image copied to clipboard!');
 })();
