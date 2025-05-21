@@ -74,7 +74,7 @@ pre { scrollbar-width: none; -ms-overflow-style: none; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-// Keyboard shortcut: Ctrl+Shift+C (or Cmd+Shift+C on Mac) to copy code window as PNG
+// Keyboard shortcut: Ctrl+C (or Cmd+C on Mac) to copy code window as PNG
 function copyCodeWindowAsImage() {
   const codeWindow = document.querySelector('.code-window');
   if (!codeWindow) return;
@@ -114,7 +114,8 @@ function showCopyToast(msg) {
   setTimeout(() => toast.remove(), 1800);
 }
 document.addEventListener('keydown', function(e) {
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === 'KeyC') {
+  // Ctrl+C (or Cmd+C on Mac) to copy code window as PNG
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.code === 'KeyC') {
     e.preventDefault();
     copyCodeWindowAsImage();
   }
