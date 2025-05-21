@@ -4,6 +4,18 @@ use std::io::{self, Read, Write};
 use std::process::Command;
 use code_beautifier::{generate_html_from_source, parse_args};
 
+fn open_in_browser(path: &str) {
+    #[cfg(target_os = "linux")]
+    let open_result = Command::new("xdg-open").arg(path).status();
+    #[cfg(target_os = "macos")]
+    let open_result = Command::new("open").arg(path).status();
+    #[cfg(target_os = "windows")]
+    let open_result = Command::new("cmd").args(["/C", "start", path]).status();
+    if let Err(e) = open_result {
+        eprintln!("[WARN] Could not open browser: {}", e);
+    }
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut code = String::new();
@@ -25,14 +37,10 @@ fn main() {
             .expect("Failed to write HTML to file");
         opts.output_filename.clone()
     } else {
-        // Write to a temp file in /tmp and open with default browser
         let tmpfile = "/tmp/code-beautifier-output.html";
         let mut file = File::create(tmpfile).expect("Failed to create temp output file");
         file.write_all(html.as_bytes()).expect("Failed to write HTML to temp file");
-        // Open with default browser
-        if let Err(e) = Command::new("xdg-open").arg(tmpfile).status() {
-            eprintln!("[WARN] Could not open browser: {}", e);
-        }
+        open_in_browser(tmpfile);
         tmpfile.to_string()
     };
 
@@ -43,10 +51,10 @@ fn main() {
             .arg(&output_file)
             .status() {
             if !status.success() {
-                eprintln!('[WARN] Could not copy image to clipboard (node/html2clip.js failed)');
+                eprintln!("[WARN] Could not copy image to clipboard (node/html2clip.js failed)");
             }
         } else {
-            eprintln!('[WARN] Could not run node/html2clip.js. Is Node.js installed?');
+            eprintln!("[WARN] Could not run node/html2clip.js. Is Node.js installed?");
         }
     }
 }
