@@ -1,8 +1,7 @@
 use std::env;
 use std::fs::File;
 use std::io::Write;
-mod lib;
-use lib::{generate_html_from_source, parse_args};
+use code_beautifier::{generate_html_from_source, parse_args};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
